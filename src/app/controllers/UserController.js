@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import User from '../models/User';
+import File from '../models/File';
 
 class UserController {
     async index(req, res) {
@@ -56,7 +57,7 @@ class UserController {
             return res.status(400).json({ error: 'Validation fails' });
         }
 
-        const { email, oldPassword } = req.body;
+        const { email, oldPassword, avatar_id } = req.body;
 
         const user = await User.findByPk(req.userId);
 
@@ -70,6 +71,16 @@ class UserController {
 
         if (oldPassword && !(await user.checkPassword(oldPassword))) {
             return res.status(401).json({ error: 'Password does not match' });
+        }
+
+        if (avatar_id) {
+            const avatarExists = await File.findByPk(avatar_id);
+
+            if (!(await avatarExists)) {
+                return res
+                    .status(401)
+                    .json({ error: 'This avatar does not exist' });
+            }
         }
 
         const { id, name, provider } = await user.update(req.body);
