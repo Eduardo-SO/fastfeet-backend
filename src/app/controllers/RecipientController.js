@@ -2,6 +2,12 @@ import User from '../models/User';
 import Recipient from '../models/Recipient';
 
 class RecipientController {
+    async index(req, res) {
+        const recipients = await Recipient.findAll();
+
+        return res.json(recipients);
+    }
+
     async store(req, res) {
         const user = await User.findOne({ where: { id: req.userId } });
 

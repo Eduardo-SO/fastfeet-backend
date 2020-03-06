@@ -76,9 +76,9 @@ class UserController {
         if (avatar_id) {
             const avatarExists = await File.findByPk(avatar_id);
 
-            if (!(await avatarExists)) {
+            if (!avatarExists) {
                 return res
-                    .status(401)
+                    .status(404)
                     .json({ error: 'This avatar does not exist' });
             }
         }
