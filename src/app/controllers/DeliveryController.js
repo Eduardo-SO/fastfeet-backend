@@ -84,7 +84,10 @@ class DeliveryController {
             return res.json({ error: 'This deliveryman does not exist' });
         }
 
-        const delivery = await Delivery.create(req.body);
+        const delivery = await Delivery.findOne({
+            where: { id: req.params.id },
+        });
+        delivery.update(req.body);
         return res.json(delivery);
     }
 
