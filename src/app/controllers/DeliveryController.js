@@ -90,33 +90,6 @@ class DeliveryController {
         delivery.update(req.body);
         return res.json(delivery);
     }
-
-    async delete(req, res) {
-        const user = await User.findByPk(req.userId);
-
-        if (!user.provider) {
-            return res.json({ error: 'User is not a provider' });
-        }
-
-        const delivery = await Delivery.findOne({
-            where: { id: req.params.id },
-        });
-
-        if (!delivery) {
-            return res.json({ error: 'This delivery does not exist' });
-        }
-
-        if (delivery.canceled_at) {
-            return res.json({
-                error: 'This delivery has already been canceled',
-            });
-        }
-
-        delivery.canceled_at = new Date();
-        delivery.save();
-
-        return res.json(delivery);
-    }
 }
 
 export default new DeliveryController();

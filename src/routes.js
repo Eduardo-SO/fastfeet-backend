@@ -7,6 +7,7 @@ import RecipientController from './app/controllers/RecipientController';
 import FileController from './app/controllers/FileController';
 import DeliverymanController from './app/controllers/DeliverymanController';
 import DeliveryController from './app/controllers/DeliveryController';
+import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 import OrderController from './app/controllers/OrderController';
 
 import multerConfig from './config/multer';
@@ -36,7 +37,6 @@ routes.delete('/deliveryman/:id', DeliverymanController.delete);
 routes.get('/deliveries', DeliveryController.index);
 routes.post('/deliveries', DeliveryController.store);
 routes.put('/deliveries/:id', DeliveryController.update);
-routes.delete('/deliveries/:id', DeliveryController.delete);
 
 routes.get('/deliveryman/:id/orders', OrderController.index);
 routes.post('/deliveries/:id/order', OrderController.store);
@@ -45,5 +45,10 @@ routes.delete(
     upload.single('file'),
     OrderController.delete
 );
+
+routes.get('/deliveries/problems', DeliveryProblemController.index);
+routes.get('/delivery/:id/problems', DeliveryProblemController.show);
+routes.post('/deliveries/:id/problems', DeliveryProblemController.store);
+routes.delete('/problem/:id/cancel-delivery', DeliveryProblemController.delete);
 
 export default routes;
