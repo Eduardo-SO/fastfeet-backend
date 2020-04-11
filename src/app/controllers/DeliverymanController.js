@@ -7,6 +7,12 @@ import Delivery from '../models/Delivery';
 
 class DeliverymanController {
     async index(req, res) {
+        const deliverymen = await Deliveryman.findAll();
+
+        return res.json(deliverymen);
+    }
+
+    async show(req, res) {
         const deliveries = await Delivery.findAll({
             where: {
                 deliveryman_id: req.params.id,
@@ -20,7 +26,7 @@ class DeliverymanController {
         const schema = Yup.object().shape({
             name: Yup.string().required(),
             email: Yup.string().required(),
-            avatar_id: Yup.number().required(),
+            avatar_id: Yup.number().notRequired(),
         });
 
         if (!(await schema.isValid(req.body))) {
@@ -115,7 +121,7 @@ class DeliverymanController {
 
         await deliveryman.destroy();
 
-        return res.json(deliveryman);
+        return res.status(204).json();
     }
 }
 

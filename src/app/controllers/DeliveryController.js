@@ -9,7 +9,37 @@ import Deliveryman from '../models/Deliveryman';
 
 class DeliveryController {
     async index(req, res) {
-        const deliveries = await Delivery.findAll();
+        const deliveries = await Delivery.findAll({
+            attributes: [
+                'id',
+                'product',
+                'canceled_at',
+                'start_date',
+                'end_date',
+                'recipient_id',
+                'deliveryman_id',
+                'signature_id',
+            ],
+            include: [
+                {
+                    model: Recipient,
+                    as: 'recipient',
+                    attributes: [
+                        'name',
+                        'street',
+                        'number',
+                        'zip_code',
+                        'state',
+                        'city',
+                    ],
+                },
+                {
+                    model: Deliveryman,
+                    as: 'deliveryman',
+                    attributes: ['name'],
+                },
+            ],
+        });
 
         return res.json(deliveries);
     }
@@ -52,6 +82,7 @@ class DeliveryController {
         });
 
         const delivery = await Delivery.create(req.body);
+
         return res.json(delivery);
     }
 
@@ -73,6 +104,12 @@ class DeliveryController {
         }
 
         const { recipient_id, deliveryman_id } = req.body;
+        const { id } = req.params;
+
+        const deliveryExist = await Delivery.findByPk(id);
+        if (!deliveryExist) {
+            return res.json({ error: 'This delivery does not exist' });
+        }
 
         const recipientExist = await Recipient.findByPk(recipient_id);
         if (!recipientExist) {

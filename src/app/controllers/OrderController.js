@@ -36,7 +36,7 @@ class OrderController {
         const currentDate = new Date();
         if (
             !isWithinInterval(currentDate, {
-                start: setHours(currentDate, 8),
+                start: setHours(currentDate, 1),
                 end: setHours(currentDate, 18),
             })
         ) {
@@ -108,6 +108,10 @@ class OrderController {
 
         if (!delivery) {
             return res.json({ error: 'This delivery does not exist' });
+        }
+
+        if (!delivery.start_date) {
+            return res.json({ error: "This order hasn't started yet" });
         }
 
         if (delivery.end_date) {

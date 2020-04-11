@@ -23,13 +23,15 @@ routes.use(authMiddleware);
 
 routes.get('/recipients', RecipientController.index);
 routes.post('/recipients', RecipientController.store);
+routes.delete('/recipients/:id', RecipientController.delete);
 
 routes.get('/users', UserController.index);
 routes.put('/users', UserController.update);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
-routes.get('/deliveryman/:id/deliveries', DeliverymanController.index);
+routes.get('/deliveryman', DeliverymanController.index);
+routes.get('/deliveryman/:id/deliveries', DeliverymanController.show);
 routes.post('/deliveryman', DeliverymanController.store);
 routes.put('/deliveryman/:id', DeliverymanController.update);
 routes.delete('/deliveryman/:id', DeliverymanController.delete);

@@ -7,11 +7,11 @@ import DeliveryProblem from '../models/DeliveryProblem';
 
 class DeliveryProblemController {
     async index(req, res) {
-        const deliveries = await Delivery.findAll({
-            where: { canceled_at: { [Op.ne]: null } },
+        const problems = await DeliveryProblem.findAll({
+            attributes: ['id', 'description', 'delivery_id'],
         });
 
-        return res.json(deliveries);
+        return res.json(problems);
     }
 
     async show(req, res) {
@@ -23,9 +23,9 @@ class DeliveryProblemController {
         });
 
         if (!deliveries) {
-            return res
-                .status(400)
-                .json({ error: 'This delivery does not exist' });
+            return res.status(400).json({
+                error: 'This delivery does not exist or already ended',
+            });
         }
 
         if (deliveries.length === 0) {
@@ -56,6 +56,18 @@ class DeliveryProblemController {
                 .json({ error: 'This delivery does not exist' });
         }
 
+        if (delivery.end_date) {
+            return res
+                .status(400)
+                .json({ error: 'This delivery has already ended' });
+        }
+
+        if (delivery.canceled_at) {
+            return res
+                .status(400)
+                .json({ error: 'This delivery has already canceled' });
+        }
+
         const deliveryProblem = await DeliveryProblem.create({
             delivery_id,
             description: req.body.description,
@@ -79,10 +91,16 @@ class DeliveryProblemController {
             return res.json({ error: 'This delivery does not exist' });
         }
 
+        if (delivery.end_date) {
+            return res
+                .status(400)
+                .json({ error: 'This delivery has already ended' });
+        }
+
         if (delivery.canceled_at) {
-            return res.json({
-                error: 'This delivery has already been canceled',
-            });
+            return res
+                .status(400)
+                .json({ error: 'This delivery has already canceled' });
         }
 
         delivery.canceled_at = new Date();
